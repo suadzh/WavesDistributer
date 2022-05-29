@@ -3,8 +3,15 @@ val scala3Version = "3.1.2"
 
 lazy val root = project
   .in(file("."))
+  .enablePlugins(NativeImagePlugin)
   .settings(
     assembly / mainClass := Some("Main"),
+    Compile / mainClass := Some("Main"),
+    nativeImageOptions += s"-H:ReflectionConfigurationFiles=${target.value / "native-image-configs" / "reflect-config.json"}",
+    nativeImageOptions += s"-H:ConfigurationFileDirectories=${target.value / "native-image-configs" }",
+    nativeImageOptions +="-H:+JNI",
+    nativeImageInstalled := true,
+    nativeImageOutput := file("build") / "distributer",
     name := "distributer",
     version := "0.1.0",
     assemblyMergeStrategy in assembly := {

@@ -33,8 +33,7 @@ object Main extends TaskApp:
 
   val invokerTask: Params => Task[List[Unit]] =
     params =>
-      Observable
-        .interval(params.interval.hour)
+      (if params.interval == 0 then Observable.pure(0) else Observable.interval(params.interval.hour))
         .mapEval(_ =>
           Task {
             val privateKey = params.privateKey
@@ -55,12 +54,12 @@ object Main extends TaskApp:
     params =>
       Task {
         println(s"""
-      ---- STARTING DISTRIBUTER ----
-      NODE: ${params.privateKey.address.encoded}
-      BENEFICIARY ADDRESS: ${params.beneficiary.encoded}
-      INTERVAL: ${params.interval} hours
-      ------------------------------
-      """.stripIndent)
+---- STARTING DISTRIBUTER ----
+NODE: ${params.privateKey.address.encoded}
+BENEFICIARY ADDRESS: ${params.beneficiary.encoded}
+INTERVAL: ${params.interval} hours
+------------------------------
+      """)
       }
 
   val argCheckTask: List[String] => Task[Map[Arg, String]] =
